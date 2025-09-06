@@ -30,7 +30,7 @@ def main():
     mapping = histogram_match(ref_cdf, test_cdf)
     processed_image = mapping[test_image]
     processed_hist_norm, processed_cdf = histogram_pdf_cdf_calculator(processed_image)
-    cv2.imwrite('matched_220192J.jpg', processed_image)
+    cv2.imwrite('processed_image.jpg', processed_image)
 
     # Plot
     plt.figure(figsize=(12,5))

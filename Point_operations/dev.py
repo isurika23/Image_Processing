@@ -20,17 +20,17 @@ def histogram_pdf_cdf_calculator(image):
     hist, _ = np.histogram(image.flatten(), 256, [0,256])
     pdf = hist / hist.sum()
     cdf = np.cumsum(pdf)
-    return hist, pdf, cdf
+    return pdf, cdf
 
 def main():
     # Compute histograms
-    test_hist, test_hist_norm, test_cdf = histogram_pdf_cdf_calculator(test_image)
-    ref_hist, ref_hist_norm, ref_cdf = histogram_pdf_cdf_calculator(ref_image)
+    test_hist_norm, test_cdf = histogram_pdf_cdf_calculator(test_image)
+    ref_hist_norm, ref_cdf = histogram_pdf_cdf_calculator(ref_image)
 
     mapping = histogram_match(ref_cdf, test_cdf)
-    matched_image = mapping[test_image]
-    _, matched_hist_norm, matched_cdf = histogram_pdf_cdf_calculator(matched_image)
-    cv2.imwrite('matched_220192J.jpg', matched_image)
+    processed_image = mapping[test_image]
+    processed_hist_norm, processed_cdf = histogram_pdf_cdf_calculator(processed_image)
+    cv2.imwrite('processed_image.jpg', processed_image)
 
     # Plot
     plt.figure(figsize=(12,7))
@@ -49,14 +49,14 @@ def main():
 
     plt.subplot(2,2,3)
     plt.fill_between(range(len(ref_hist_norm)), ref_hist_norm, alpha=0.7, label='Ref PDF')
-    plt.fill_between(range(len(matched_hist_norm)), matched_hist_norm, alpha=0.7, label='Matched PDF')
-    plt.title('Matched PDF vs Ref PDF')
+    plt.fill_between(range(len(processed_hist_norm)), processed_hist_norm, alpha=0.7, label='Processed PDF')
+    plt.title('Processed PDF vs Ref PDF')
     plt.legend()
 
     plt.subplot(2,2,4)
     plt.plot(ref_cdf, label='Ref CDF')
-    plt.plot(matched_cdf, label='Matched CDF')
-    plt.title('Matched CDF vs Ref CDF')
+    plt.plot(processed_cdf, label='Processed CDF')
+    plt.title('Processed CDF vs Ref CDF')
     plt.legend()
 
     plt.figure(figsize=(15,5))   # wider since 3 images side by side
@@ -72,8 +72,8 @@ def main():
     plt.axis("off")
 
     plt.subplot(1,3,3)
-    plt.imshow(matched_image, cmap='gray')
-    plt.title("Matched Image")
+    plt.imshow(processed_image, cmap='gray')
+    plt.title("Processed Image")
     plt.axis("off")
 
     plt.show()
